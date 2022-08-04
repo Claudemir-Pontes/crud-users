@@ -18,3 +18,5 @@ model Users {
   isRoot   Boolean
   password String
 }
+
+

@@ -1,8 +1,31 @@
-//import prisma  from "../models/model"
+import {prisma}  from "../models/model"
 
-class crud{
+export async function getUsers(){
 
-    constructor(usersModel){
-        this.users = usersModel
-    }
+    const users = await prisma.users.findMany()
+    return users
 }
+
+export async function createUser( dadosTDO){
+
+    console.log(dadosTDO)
+
+    await prisma.users.create({
+        
+        data :  dadosTDO
+    })
+}
+
+export async function updateUser(dadosTDO){
+
+    console.log(dadosTDO)
+    
+    await prisma.users.update({
+        where:{
+            id: dadosTDO.id,
+        },
+        data: dadosTDO
+    })
+    console.log('bd atualizado')
+}
+
