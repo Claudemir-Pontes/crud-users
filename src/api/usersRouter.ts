@@ -1,5 +1,5 @@
 import express from "express"
-import { getUsers, createUser, updateUser } from "../services/userService"
+import { getUsers, createUser, updateUser ,deleteUser} from "../services/userService"
 
 
 const router = express.Router()
@@ -89,6 +89,20 @@ router.put('/', async (req, res) => {
         }
     }
 
+
+})
+
+router.delete('/', async (req, res)=>{
+    try {
+        const userId = req.body.id
+
+        await deleteUser(userId)
+
+        res.status(200).send('Usuario deletado com sucesso.')
+
+    } catch (err) {
+        res.status(400).send(console.error(err.message))
+    }
 
 })
 

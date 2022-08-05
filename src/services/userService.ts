@@ -29,3 +29,11 @@ export async function updateUser(dadosTDO){
     console.log('bd atualizado')
 }
 
+export async function deleteUser(userId: string) {
+    await prisma.users.delete({
+        where:{
+            id: userId
+        }
+    })
+}
+
