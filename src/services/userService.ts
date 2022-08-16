@@ -1,4 +1,4 @@
-import {prisma}  from "../models/model"
+import {prisma}  from "../models/prismaModel"
 
 export async function getUsers(){
 
@@ -36,4 +36,3 @@ export async function deleteUser(userId: string) {
         }
     })
 }
-

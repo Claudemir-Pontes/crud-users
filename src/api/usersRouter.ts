@@ -1,5 +1,6 @@
 import express from "express"
-import { getUsers, createUser, updateUser ,deleteUser} from "../services/userService"
+import { validationMiddleware } from "../middlewares/userValidation"
+import { getUsers, createUser, updateUser, deleteUser } from "../services/userService"
 
 
 const router = express.Router()
@@ -22,7 +23,7 @@ router.get('/', async (req, res) => {
     }
 })
 
-router.post('/', async (req, res) => {
+router.post('/', validationMiddleware, async (req, res) => {
     try {
         const dadosTDO = req.body
 
@@ -34,65 +35,21 @@ router.post('/', async (req, res) => {
     }
 })
 
-router.put('/', async (req, res) => {
+router.put('/', validationMiddleware, async (req, res) => {
 
-    // validações
-    
-    let erros = []
+    try {
+        const dadosTDO = req.body
 
-    if (!req.body.id || typeof req.body.id == undefined || req.body.id == null) {
-        erros.push({ texto: "id invalido" })
-        res.status(400).send(erros)
-        
+        await updateUser(dadosTDO)
+
+        res.status(201).send('Usuario atualizado com sucesso.')
+
+    } catch (err) {
+        res.status(400).send(console.error(err.message))
     }
-
-    if (!req.body.name || typeof req.body.name == undefined || req.body.name == null) {
-        erros.push({ texto: "name invalido" })
-        res.status(400).send(erros)
-        
-    }
-
-    if (!req.body.Photo || typeof req.body.Photo == undefined || req.body.Photo == null) {
-        erros.push({ texto: "Photo invalida" })
-        res.status(400).send(erros)
-        
-    }
-
-    if (!req.body.email || typeof req.body.email == undefined || req.body.email == null) {
-        erros.push({ texto: "email invalido" })
-        res.status(400).send(erros)
-        
-    }
-    
-    if ( typeof req.body.isRoot == undefined || req.body.isRoot == null) {
-        erros.push({ texto: "isRoot invalido" })
-        res.status(400).send(erros)
-        
-    }
-    
-    if (!req.body.password || typeof req.body.password == undefined || req.body.password == null) {
-        erros.push({ texto: "password invalido" })
-        res.status(400).send(erros)
-        
-    }
-    
-    else {
-        try {
-            const dadosTDO = req.body
-
-            await updateUser(dadosTDO)
-
-            res.status(201).send('Usuario atualizado com sucesso.')
-
-        } catch (err) {
-            res.status(400).send(console.error(err.message))
-        }
-    }
-
-
 })
 
-router.delete('/', async (req, res)=>{
+router.delete('/', async (req, res) => {
     try {
         const userId = req.body.id
 

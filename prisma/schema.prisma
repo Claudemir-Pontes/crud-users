@@ -11,12 +11,10 @@ datasource db {
 }
 
 model Users {
-  id       String  @id @default(uuid())
+  id       String @id @default(uuid())
   name     String
-  Photo    String
+  age      Int
+  photo    String
   email    String
-  isRoot   Boolean
   password String
 }
-
-
