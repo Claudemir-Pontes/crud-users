@@ -2,13 +2,13 @@
   "name": "crud-users",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.ts",
   "scripts": {
     "dev": "tsnd --transpile-only --respawn --ignore-watch node_modules server.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
+  "author": "Claudemir-Pontes",
   "license": "ISC",
   "dependencies": {
     "@prisma/client": "^4.1.1",

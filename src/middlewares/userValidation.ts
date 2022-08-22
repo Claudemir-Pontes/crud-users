@@ -1,9 +1,7 @@
-import express from 'express'
+import { NextFunction, Request, Response } from "express"
 import {userSchema} from "../models/userSchema"
 
-const router = express.Router()
-
-export const validationMiddleware = (request, response, next) => {
+export function validationMiddleware ( request: Request, response: Response, next: NextFunction ) {
     const { error } = userSchema.validate(request.body)
     const valid = error == null
 
@@ -12,7 +10,6 @@ export const validationMiddleware = (request, response, next) => {
     } else {
         const { details } = error
         const message = details.map(i => i.message).join(',')
-
         console.log("error", message)
         response.status(422).json({ error: message })
     }

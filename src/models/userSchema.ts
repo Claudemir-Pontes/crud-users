@@ -1,6 +1,8 @@
 import Joi from 'joi'
 
 export const userSchema = Joi.object({
+    id: Joi.string(),
+
     name: Joi.string()
         .alphanum()
         .min(3)
@@ -12,11 +14,10 @@ export const userSchema = Joi.object({
         .min(18)
         .max(100),
 
-
     photo: Joi.string()
-        .alphanum()
-        .min(5)
-        .max(100),
+        .uri()
+        .required()
+        .allow(''),
 
     email: Joi.string()
         .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }),

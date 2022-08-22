@@ -1,4 +1,4 @@
-//arquivo de configuração da aplicação express
+//express application configuration file
 import express from 'express'
 import  routers  from './api'
 

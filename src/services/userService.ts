@@ -1,38 +1,58 @@
-import {prisma}  from "../models/prismaModel"
+import { prisma } from "../models/prismaModel"
 
-export async function getUsers(){
-
-    const users = await prisma.users.findMany()
-    return users
+interface IUserRequest {
+    id: string,
+    name: string;
+    age: number,
+    photo: string,
+    email: string,
+    password: string;
 }
 
-export async function createUser( dadosTDO){
+export class UserService {
 
-    console.log(dadosTDO)
+    async getUsers() {
 
-    await prisma.users.create({
-        
-        data :  dadosTDO
-    })
-}
+        const users = await prisma.users.findMany()
+        return users
+    }
 
-export async function updateUser(dadosTDO){
+    async createUser(dataTDO: IUserRequest) {
 
-    console.log(dadosTDO)
-    
-    await prisma.users.update({
-        where:{
-            id: dadosTDO.id,
-        },
-        data: dadosTDO
-    })
-    console.log('bd atualizado')
-}
+        //Check if user exists
+        const userAlreadyExists = await prisma.users.findFirst({
+            where: {
+                email: dataTDO.email,
+            },
+        })
 
-export async function deleteUser(userId: string) {
-    await prisma.users.delete({
-        where:{
-            id: userId
+        if (userAlreadyExists) {
+            throw new Error("User already exists!");
         }
-    })
+
+        //Register the User
+        await prisma.users.create({
+            data: dataTDO
+        })
+    }
+
+    async updateUser(dataTDO: IUserRequest) {
+
+        await prisma.users.update({
+            where: {
+                id: dataTDO.id
+            },
+            data: dataTDO
+        })
+        console.log('db updated.')
+    }
+
+    async deleteUser(userId: string) {
+        await prisma.users.delete({
+            where: {
+                id: userId
+            }
+        })
+    }
 }
+

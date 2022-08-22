@@ -1,20 +1,19 @@
 import express from "express"
 import { validationMiddleware } from "../middlewares/userValidation"
-import { getUsers, createUser, updateUser, deleteUser } from "../services/userService"
+//import { getUsers, createUser, updateUser, deleteUser } from "../services/userService"
+import { UserService } from "../services/userService"
 
 
 const router = express.Router()
+
+const userService = new UserService()
 
 router.get('/', async (req, res) => {
 
     try {
         const usersTDO = req.body
 
-        const users = await getUsers()
-
-        // if (!users) {
-        //     throw new Error('Falha ao acessar banco de dados.')
-        //   }
+        const users = await userService.getUsers()
 
         res.status(200).json(users)
 
@@ -25,24 +24,24 @@ router.get('/', async (req, res) => {
 
 router.post('/', validationMiddleware, async (req, res) => {
     try {
-        const dadosTDO = req.body
+        const dataTDO = req.body
 
-        await createUser(dadosTDO)
+        await userService.createUser(dataTDO)
 
-        res.status(201).send('Usuario criado com sucesso.')
+        res.status(201).send('User created successfully.')
     } catch (err) {
-        res.status(400).send(err)
+        res.status(400).send(err.message)
     }
 })
 
 router.put('/', validationMiddleware, async (req, res) => {
 
     try {
-        const dadosTDO = req.body
+        const dataTDO = req.body
 
-        await updateUser(dadosTDO)
+        await userService.updateUser(dataTDO)
 
-        res.status(201).send('Usuario atualizado com sucesso.')
+        res.status(201).send('User successfully updated.')
 
     } catch (err) {
         res.status(400).send(console.error(err.message))
@@ -53,9 +52,9 @@ router.delete('/', async (req, res) => {
     try {
         const userId = req.body.id
 
-        await deleteUser(userId)
+        await userService.deleteUser(userId)
 
-        res.status(200).send('Usuario deletado com sucesso.')
+        res.status(200).send('User successfully deleted.')
 
     } catch (err) {
         res.status(400).send(console.error(err.message))
