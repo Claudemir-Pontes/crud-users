@@ -9,20 +9,12 @@ export const userSchema = Joi.object({
         .max(30)
         .required(),
 
-    age: Joi.number()
-        .integer()
-        .min(18)
-        .max(100),
-
-    photo: Joi.string()
-        .uri()
-        .required()
-        .allow(''),
-
     email: Joi.string()
         .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }),
 
-    password: Joi.string()
+    hashed_password: Joi.string()
         .pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')),
 
 })
+
+

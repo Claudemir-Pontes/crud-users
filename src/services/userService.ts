@@ -2,25 +2,23 @@ import { prisma } from "../models/prismaModel"
 
 interface IUserRequest {
     id: string,
-    name: string;
-    age: number,
-    photo: string,
+    name: string,
     email: string,
-    password: string;
+    hashed_password: string
 }
 
 export class UserService {
 
     async getUsers() {
 
-        const users = await prisma.users.findMany()
+        const users = await prisma.user.findMany()
         return users
     }
 
     async createUser(dataTDO: IUserRequest) {
 
         //Check if user exists
-        const userAlreadyExists = await prisma.users.findFirst({
+        const userAlreadyExists = await prisma.user.findFirst({
             where: {
                 email: dataTDO.email,
             },
@@ -31,14 +29,26 @@ export class UserService {
         }
 
         //Register the User
-        await prisma.users.create({
+        await prisma.user.create({
             data: dataTDO
         })
     }
 
     async updateUser(dataTDO: IUserRequest) {
 
-        await prisma.users.update({
+        //Check if email exists
+        const userAlreadyExists = await prisma.user.findFirst({
+            where: {
+                email: dataTDO.email,
+            },
+        })
+
+        if (userAlreadyExists) {
+            throw new Error("Email already exists!");
+        }
+
+        //Update the user
+        await prisma.user.update({
             where: {
                 id: dataTDO.id
             },
@@ -48,7 +58,7 @@ export class UserService {
     }
 
     async deleteUser(userId: string) {
-        await prisma.users.delete({
+        await prisma.user.delete({
             where: {
                 id: userId
             }
