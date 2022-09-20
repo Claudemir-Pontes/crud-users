@@ -1,18 +1,16 @@
-import express from "express"
+import { Router } from "express"
 import { validationMiddleware } from "../middlewares/userValidation"
 //import { getUsers, createUser, updateUser, deleteUser } from "../services/userService"
 import { UserService } from "../services/userService"
 
 
-const router = express.Router()
+const router = Router()
 
 const userService = new UserService()
 
 router.get('/', async (req, res) => {
 
     try {
-        const usersTDO = req.body
-
         const users = await userService.getUsers()
 
         res.status(200).json(users)

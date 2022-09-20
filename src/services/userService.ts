@@ -37,6 +37,7 @@ export class UserService {
     async updateUser(dataTDO: IUserRequest) {
 
         //Check if email exists
+        // see later
         const userAlreadyExists = await prisma.user.findFirst({
             where: {
                 email: dataTDO.email,
