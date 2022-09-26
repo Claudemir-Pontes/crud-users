@@ -39,7 +39,7 @@ router.put('/', validationMiddleware, async (req, res) => {
 
         await userService.updateUser(dataTDO)
 
-        res.status(201).send('User successfully updated.')
+        res.status(200).send('User successfully updated.')
 
     } catch (err) {
         res.status(400).send(console.error(err.message))

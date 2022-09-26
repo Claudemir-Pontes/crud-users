@@ -30,7 +30,18 @@ export class UserService {
 
         //Register the User
         await prisma.user.create({
-            data: dataTDO
+            //data: dataTDO
+            data: {
+                name: dataTDO.name,
+                email: dataTDO.email,
+                hashed_password: dataTDO.hashed_password,
+                // profile: {
+                //     create:{
+                //         bio: "aaaa",
+                //         picture: Buffer.from("abc")
+                //     }
+                // }
+            }
         })
     }
 

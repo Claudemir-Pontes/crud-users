@@ -4,7 +4,9 @@ interface IProfileRequest {
     id: string,
     bio: string,
     picture: string,
-    userId: string
+    name: string,
+    email: string,
+    hashed_password: string,
 }
 
 export class ProfileService {
@@ -19,12 +21,11 @@ export class ProfileService {
             data: {
                 bio: dataTDO.bio,
                 picture: Buffer.from(dataTDO.picture),
-                //userId: dataTDO.userId,
                 user: {
                     create: {
-                        name: "carlos",
-                        email: "example8@.com",
-                        hashed_password: "123"
+                        name: dataTDO.name,
+                        email: dataTDO.email,
+                        hashed_password: dataTDO.hashed_password
                     }
                 }
             }
@@ -34,6 +35,26 @@ export class ProfileService {
         //     throw new Error("Error creating profile!");
         // }
 
+    }
+
+    async updateProfile(dataTDO: IProfileRequest) {
+        await prisma.profile.update({
+            where: {
+                id: dataTDO.id
+            },
+            data: {
+                bio: dataTDO.bio,
+                picture: Buffer.from(dataTDO.picture)
+            }
+        })
+    }
+
+    async deleteProfile(idProfile: string) {
+        await prisma.profile.delete({
+            where: {
+                id: idProfile
+            }
+        })
     }
 }
 
