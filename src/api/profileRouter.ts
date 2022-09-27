@@ -41,7 +41,7 @@ router.put('/', async (req, res) => {
 
 router.delete('/', async (req, res) => {
     try {
-        const idProfile = req.body.id
+        const idProfile = req.body
 
         await profileService.deleteProfile(idProfile)
         res.status(200).send('Profile successfully deleted.')

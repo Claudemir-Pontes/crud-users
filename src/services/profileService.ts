@@ -49,10 +49,10 @@ export class ProfileService {
         })
     }
 
-    async deleteProfile(idProfile: string) {
+    async deleteProfile(idProfile: IProfileRequest) {
         await prisma.profile.delete({
             where: {
-                id: idProfile
+                id: idProfile.id
             }
         })
     }
