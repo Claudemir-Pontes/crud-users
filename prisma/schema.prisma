@@ -16,6 +16,7 @@ model User {
   email           String
   hashed_password String
   profile         Profile?
+  posts           Post[]
 }
 
 model Profile {
@@ -25,4 +26,14 @@ model Profile {
   created_at DateTime @default(now())
   user       User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   userId     String   @unique
+}
+
+model Post {
+  id         String   @id @default(uuid())
+  title      String
+  body       String
+  published  Boolean  @default(false)
+  created_at DateTime @default(now())
+  author     User     @relation(fields: [authorId], references: [id])
+  authorId   String
 }
