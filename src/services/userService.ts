@@ -64,7 +64,11 @@ export class UserService {
             where: {
                 id: dataTDO.id
             },
-            data: dataTDO
+            data: {
+                name: dataTDO.name,
+                email: dataTDO.email,
+                hashed_password: dataTDO.hashed_password
+            }
         })
         console.log('db updated.')
     }

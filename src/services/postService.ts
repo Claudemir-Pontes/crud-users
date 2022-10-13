@@ -2,14 +2,19 @@ import { prisma } from "../models/prismaModel"
 
 export class PostService {
 
-    async createPost(post) {
+    async getPost() {
+        const posts = await prisma.post.findMany()
+        return posts
+    }
+
+    async createPost({ title, body, author }) {
         await prisma.post.create({
             data: {
-                title: post.title,
-                body: post.body,
+                title,
+                body,
                 author: {
                     connect: {
-                        id: post.author
+                        id: author
                     }
                 }
             }
@@ -17,57 +22,49 @@ export class PostService {
         })
     }
 
-    async getPost() {
-        const post = await prisma.post.findMany()
-        return post
-    }
-
-    async updatePost(postTDO) {
-
-        const userRequest = postTDO.userRequest
+    async updatePost({ currentUser, id, title, body, published }) {
 
         // checks if the user owns the Post
-        const userPost = await prisma.post.findFirst({
+        const postAuthor = await prisma.post.findFirst({
             where: {
-                id: postTDO.id
+                id
             }
         })
 
-        if (userRequest != userPost.authorId) {
+        if (currentUser != postAuthor.authorId) {
             throw new Error("Access denied.")
         }
 
         // updates the Post.
         await prisma.post.update({
             where: {
-                id: postTDO.id
+                id
             },
             data: {
-                title: postTDO.title,
-                body: postTDO.body,
-                published: postTDO.published
+                title,
+                body,
+                published
             }
         })
     }
 
-    async deletePost(dataTDO) {
-        const userRequest = dataTDO.userRequest
+    async deletePost({ currentUser, id }) {
 
         // checks if the user owns the Post
-        const userPost = await prisma.post.findFirst({
+        const postAuthor = await prisma.post.findFirst({
             where: {
-                id: dataTDO.id
+                id
             }
         })
 
-        if (userRequest != userPost.authorId) {
+        if (currentUser != postAuthor.authorId) {
             throw new Error("Access denied.")
         }
 
         // delete the post
         await prisma.post.delete({
             where: {
-                id: dataTDO.id
+                id
             }
         })
     }

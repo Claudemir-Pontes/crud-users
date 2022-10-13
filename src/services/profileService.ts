@@ -7,6 +7,7 @@ interface IProfileRequest {
     name: string,
     email: string,
     hashed_password: string,
+    userId: string
 }
 
 export class ProfileService {
@@ -44,15 +45,26 @@ export class ProfileService {
             },
             data: {
                 bio: dataTDO.bio,
-                picture: Buffer.from(dataTDO.picture)
+                picture: Buffer.from(dataTDO.picture),
+                user: {
+                    update: {
+                        id: dataTDO.userId                     
+                    }
+                }
             }
         })
     }
 
     async deleteProfile(idProfile: IProfileRequest) {
-        await prisma.profile.delete({
+        const userId = await prisma.profile.delete({
             where: {
                 id: idProfile.id
+            }
+        })
+        console.log(userId.userId)
+        await prisma.user.delete({
+            where: {
+                id: userId.userId
             }
         })
     }
