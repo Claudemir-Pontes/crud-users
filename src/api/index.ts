@@ -3,7 +3,6 @@ import usersRouter from "./usersRouter"
 import profilesRouter from "./profileRouter"
 import postsRouter from "./postRouter"
 
-
 const router = Router()
 
 router.get('/', (request, response) => {

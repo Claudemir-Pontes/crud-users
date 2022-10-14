@@ -1,6 +1,6 @@
 import { prisma } from "../models/prismaModel"
 
-interface IProfileRequest {
+interface IProfilesRequest {
     id: string,
     bio: string,
     picture: string,
@@ -17,45 +17,40 @@ export class ProfileService {
         return profile
     }
 
-    async createProfile(dataTDO: IProfileRequest) {
+    async createProfile({ bio, picture, name, email, hashed_password } : Partial<IProfilesRequest>) {
         const createProfile = await prisma.profile.create({
             data: {
-                bio: dataTDO.bio,
-                picture: Buffer.from(dataTDO.picture),
+                bio,
+                picture,
                 user: {
                     create: {
-                        name: dataTDO.name,
-                        email: dataTDO.email,
-                        hashed_password: dataTDO.hashed_password
+                        name,
+                        email,
+                        hashed_password
                     }
                 }
             }
         })
-
-        // if (!createProfile) {
-        //     throw new Error("Error creating profile!");
-        // }
-
     }
 
-    async updateProfile(dataTDO: IProfileRequest) {
+    async updateProfile( { id, bio, picture, userId } : Partial<IProfilesRequest>) {
         await prisma.profile.update({
             where: {
-                id: dataTDO.id
+                id: id
             },
             data: {
-                bio: dataTDO.bio,
-                picture: Buffer.from(dataTDO.picture),
+                bio: bio,
+                picture: picture,
                 user: {
                     update: {
-                        id: dataTDO.userId                     
+                        id: userId                     
                     }
                 }
             }
         })
     }
 
-    async deleteProfile(idProfile: IProfileRequest) {
+    async deleteProfile(idProfile: IProfilesRequest) {
         const userId = await prisma.profile.delete({
             where: {
                 id: idProfile.id

@@ -1,5 +1,14 @@
 import { prisma } from "../models/prismaModel"
 
+interface IPostsRequest {
+    title: string, 
+    body: string, 
+    author: string,
+    currentUser: string, 
+    id: string,
+    published: boolean
+}
+
 export class PostService {
 
     async getPost() {
@@ -7,7 +16,7 @@ export class PostService {
         return posts
     }
 
-    async createPost({ title, body, author }) {
+    async createPost({ title, body, author } : Partial<IPostsRequest> ) {
         await prisma.post.create({
             data: {
                 title,
@@ -22,7 +31,7 @@ export class PostService {
         })
     }
 
-    async updatePost({ currentUser, id, title, body, published }) {
+    async updatePost({ currentUser, id, title, body, published } : Partial<IPostsRequest> ) {
 
         // checks if the user owns the Post
         const postAuthor = await prisma.post.findFirst({
@@ -48,7 +57,7 @@ export class PostService {
         })
     }
 
-    async deletePost({ currentUser, id }) {
+    async deletePost({ currentUser, id } : Partial<IPostsRequest> ) {
 
         // checks if the user owns the Post
         const postAuthor = await prisma.post.findFirst({

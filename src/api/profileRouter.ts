@@ -2,51 +2,52 @@ import { Router } from "express"
 import { ProfileService } from "../services/profileService"
 
 const router = Router()
-
 const profileService = new ProfileService()
 
-router.get('/', async (req, res) => {
+router.get('/', async (request, response) => {
     try {
-        const profile = await profileService.getProfile()
+        const profiles = await profileService.getProfile()
 
-        res.status(200).json(profile)
+        response.status(200).json(profiles)
 
-    } catch (err) {
-        res.status(400).send()
+    } catch (error) {
+        response.status(400).send(error.message)
     }
 })
 
-router.post('/', async (req, res) => {
+router.post('/', async (request, response) => {
     try {
-        const dataTDO = req.body
+        const { bio, picture, name, email, hashed_password } = request.body
 
-        await profileService.createProfile(dataTDO)
-
-        res.status(201).send('Profile created successfully.')
-    } catch (err) {
-        res.status(400).send(err.message)
+        await profileService.createProfile({ bio, picture, name, email, hashed_password })
+        response.status(201).send('Profile created successfully.')
+    } 
+    catch (error) {
+        response.status(400).send(error.message)
     }
 })
 
-router.put('/', async (req, res) => {
+router.put('/', async (request, response) => {
     try {
-        const dataTDO = req.body
+        const { id, bio, picture, userId } = request.body
         
-        await profileService.updateProfile(dataTDO)
-        res.status(200).send('Profile successfully updated.')
-    } catch (err) {
-        res.status(400).send(err.message)
+        await profileService.updateProfile({ id, bio, picture, userId })
+        response.status(200).send('Profile successfully updated.')
+    } 
+    catch (error) {
+        response.status(400).send(error.message)
     }
 })
 
-router.delete('/', async (req, res) => {
+router.delete('/', async (request, response) => {
     try {
-        const idProfile = req.body
+        const idProfile = request.body
 
         await profileService.deleteProfile(idProfile)
-        res.status(200).send('Profile successfully deleted.')
-    } catch (err) {
-        res.status(400).send(err.message)
+        response.status(200).send('Profile successfully deleted.')
+    } 
+    catch (error) {
+        response.status(400).send(error.message)
     }
 })
 
