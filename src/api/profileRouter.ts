@@ -21,7 +21,7 @@ router.post('/', async (request, response) => {
 
         await profileService.createProfile({ bio, picture, name, email, hashed_password })
         response.status(201).send('Profile created successfully.')
-    } 
+    }
     catch (error) {
         response.status(400).send(error.message)
     }
@@ -30,10 +30,10 @@ router.post('/', async (request, response) => {
 router.put('/', async (request, response) => {
     try {
         const { id, bio, picture, userId } = request.body
-        
+
         await profileService.updateProfile({ id, bio, picture, userId })
         response.status(200).send('Profile successfully updated.')
-    } 
+    }
     catch (error) {
         response.status(400).send(error.message)
     }
@@ -41,11 +41,11 @@ router.put('/', async (request, response) => {
 
 router.delete('/', async (request, response) => {
     try {
-        const idProfile = request.body
+        const { id } = request.body
 
-        await profileService.deleteProfile(idProfile)
+        await profileService.deleteProfile({ id })
         response.status(200).send('Profile successfully deleted.')
-    } 
+    }
     catch (error) {
         response.status(400).send(error.message)
     }

@@ -17,7 +17,7 @@ export class ProfileService {
         return profile
     }
 
-    async createProfile({ bio, picture, name, email, hashed_password } : Partial<IProfilesRequest>) {
+    async createProfile({ bio, picture, name, email, hashed_password }: Partial<IProfilesRequest>) {
         const createProfile = await prisma.profile.create({
             data: {
                 bio,
@@ -33,30 +33,29 @@ export class ProfileService {
         })
     }
 
-    async updateProfile( { id, bio, picture, userId } : Partial<IProfilesRequest>) {
+    async updateProfile({ id, bio, picture, userId }: Partial<IProfilesRequest>) {
         await prisma.profile.update({
             where: {
-                id: id
+                id
             },
             data: {
-                bio: bio,
-                picture: picture,
+                bio,
+                picture,
                 user: {
                     update: {
-                        id: userId                     
+                        id: userId
                     }
                 }
             }
         })
     }
 
-    async deleteProfile(idProfile: IProfilesRequest) {
+    async deleteProfile({ id }: Partial<IProfilesRequest>) {
         const userId = await prisma.profile.delete({
             where: {
-                id: idProfile.id
+                id
             }
         })
-        console.log(userId.userId)
         await prisma.user.delete({
             where: {
                 id: userId.userId

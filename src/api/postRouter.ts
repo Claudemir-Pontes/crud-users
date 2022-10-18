@@ -21,7 +21,7 @@ router.post('/', async (request, response) => {
 
         await postService.createPost({ title, body, author })
         response.status(201).send("The post was created successfully.")
-    } 
+    }
     catch (error) {
         response.status(400).send(error.message)
     }
@@ -33,7 +33,7 @@ router.put('/', async (request, response) => {
 
         await postService.updatePost({ currentUser, id, title, body, published })
         response.status(200).send("The post has been successfully updated.")
-    } 
+    }
     catch (error) {
         response.status(400).send(error.message)
     }
@@ -45,7 +45,7 @@ router.delete('/', async (request, response) => {
 
         await postService.deletePost({ currentUser, id })
         response.status(200).send("The post has been successfully deleted.")
-    } 
+    }
     catch (error) {
         response.status(400).send(error.message)
     }

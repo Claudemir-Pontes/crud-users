@@ -1,61 +1,57 @@
 import { Router } from "express"
 import { validationMiddleware } from "../middlewares/userValidation"
-//import { getUsers, createUser, updateUser, deleteUser } from "../services/userService"
 import { UserService } from "../services/userService"
-
 
 const router = Router()
 
 const userService = new UserService()
 
-router.get('/', async (req, res) => {
+router.get('/', async (request, response) => {
 
     try {
         const users = await userService.getUsers()
 
-        res.status(200).json(users)
-
-    } catch (err) {
-        res.status(401).send(err.message)
+        response.status(200).json(users)
+    }
+    catch (error) {
+        response.status(400).send(error.message)
     }
 })
 
-router.post('/', validationMiddleware, async (req, res) => {
+router.post('/', validationMiddleware, async (request, response) => {
     try {
-        const dataTDO = req.body
+        const { name, email, hashed_password } = request.body
 
-        await userService.createUser(dataTDO)
-
-        res.status(201).send('User created successfully.')
-    } catch (err) {
-        res.status(400).send(err.message)
+        await userService.createUser({ name, email, hashed_password })
+        response.status(201).send('User created successfully.')
+    }
+    catch (error) {
+        response.status(400).send(error.message)
     }
 })
 
-router.put('/', validationMiddleware, async (req, res) => {
+router.put('/', validationMiddleware, async (request, response) => {
 
     try {
-        const dataTDO = req.body
+        const { id, name, email, hashed_password } = request.body
 
-        await userService.updateUser(dataTDO)
-
-        res.status(200).send('User successfully updated.')
-
-    } catch (err) {
-        res.status(400).send(console.error(err.message))
+        await userService.updateUser({ id, name, email, hashed_password })
+        response.status(200).send('User successfully updated.')
+    }
+    catch (error) {
+        response.status(400).send(error.message)
     }
 })
 
-router.delete('/', async (req, res) => {
+router.delete('/', async (request, response) => {
     try {
-        const userId = req.body.id
+        const { id } = request.body
 
-        await userService.deleteUser(userId)
-
-        res.status(200).send('User successfully deleted.')
-
-    } catch (err) {
-        res.status(400).send(console.error(err.message))
+        await userService.deleteUser({ id })
+        response.status(200).send('User successfully deleted.')
+    }
+    catch (error) {
+        response.status(400).send(error.message)
     }
 
 })

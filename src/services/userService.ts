@@ -15,13 +15,13 @@ export class UserService {
         return users
     }
 
-    async createUser(dataTDO: IUserRequest) {
+    async createUser({ name, email, hashed_password }: Partial<IUserRequest>) {
 
         //Check if user exists
         const userAlreadyExists = await prisma.user.findFirst({
             where: {
-                email: dataTDO.email,
-            },
+                email
+            }
         })
 
         if (userAlreadyExists) {
@@ -30,53 +30,44 @@ export class UserService {
 
         //Register the User
         await prisma.user.create({
-            //data: dataTDO
             data: {
-                name: dataTDO.name,
-                email: dataTDO.email,
-                hashed_password: dataTDO.hashed_password,
-                // profile: {
-                //     create:{
-                //         bio: "aaaa",
-                //         picture: Buffer.from("abc")
-                //     }
-                // }
+                name,
+                email,
+                hashed_password
             }
         })
     }
 
-    async updateUser(dataTDO: IUserRequest) {
+    async updateUser({ id, name, email, hashed_password }: IUserRequest) {
 
         //Check if email exists
-        // see later
         const userAlreadyExists = await prisma.user.findFirst({
             where: {
-                email: dataTDO.email,
-            },
+                email
+            }
         })
 
         if (userAlreadyExists) {
-            throw new Error("Email already exists!");
+            throw new Error("Email already exists!")
         }
 
         //Update the user
         await prisma.user.update({
             where: {
-                id: dataTDO.id
+                id
             },
             data: {
-                name: dataTDO.name,
-                email: dataTDO.email,
-                hashed_password: dataTDO.hashed_password
+                name,
+                email,
+                hashed_password
             }
         })
-        console.log('db updated.')
     }
 
-    async deleteUser(userId: string) {
+    async deleteUser({ id }: Partial<IUserRequest>) {
         await prisma.user.delete({
             where: {
-                id: userId
+                id
             }
         })
     }
