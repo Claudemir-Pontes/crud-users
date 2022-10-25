@@ -1,8 +1,9 @@
 import { Router } from "express"
-import { validationMiddleware } from "../middlewares/userValidation"
+import { createUserValidate } from "../middlewares/userValidation"
 import { UserService } from "../services/userService"
 
 const router = Router()
+
 
 const userService = new UserService()
 
@@ -18,7 +19,7 @@ router.get('/', async (request, response) => {
     }
 })
 
-router.post('/', validationMiddleware, async (request, response) => {
+router.post('/', createUserValidate, async (request, response) => {
     try {
         const { name, email, hashed_password } = request.body
 
@@ -30,7 +31,7 @@ router.post('/', validationMiddleware, async (request, response) => {
     }
 })
 
-router.put('/', validationMiddleware, async (request, response) => {
+router.put('/', createUserValidate, async (request, response) => {
 
     try {
         const { id, name, email, hashed_password } = request.body
