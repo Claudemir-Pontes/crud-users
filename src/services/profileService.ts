@@ -18,6 +18,17 @@ export class ProfileService {
     }
 
     async createProfile({ bio, picture, name, email, hashed_password }: Partial<IProfilesRequest>) {
+        //Check if email exists
+        // const emailAlreadyExists = await prisma.user.findFirst({
+        //     where: {
+        //         email
+        //     }
+        // })
+
+        // if (emailAlreadyExists) {
+        //     throw new Error("Email already exists!")
+        // }
+
         const createProfile = await prisma.profile.create({
             data: {
                 bio,

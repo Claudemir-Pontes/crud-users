@@ -1,11 +1,5 @@
 import { prisma } from "../models/prismaModel"
-
-interface IUserRequest {
-    id: string,
-    name: string,
-    email: string,
-    hashed_password: string
-}
+import { IUserRequest } from "../interfaces/IUserRequest"
 
 export class UserService {
 
@@ -25,7 +19,7 @@ export class UserService {
         })
 
         if (userAlreadyExists) {
-            throw new Error("User already exists!");
+            throw new Error("User already exists!")
         }
 
         //Register the User
@@ -65,6 +59,17 @@ export class UserService {
     }
 
     async deleteUser({ id }: Partial<IUserRequest>) {
+        //Check if user exists
+        const userAlreadyExists = await prisma.user.findFirst({
+            where: {
+                id
+            }
+        })
+
+        if (!userAlreadyExists) {
+            throw new Error("User does not exist!")
+        }
+
         await prisma.user.delete({
             where: {
                 id
