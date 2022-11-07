@@ -1,13 +1,5 @@
 import { prisma } from "../models/prismaModel"
-
-interface IPostsRequest {
-    title: string,
-    body: string,
-    author: string,
-    currentUser: string,
-    id: string,
-    published: boolean
-}
+import { IPostsRequest } from "../interfaces/IPostsRequest"
 
 export class PostService {
 
@@ -17,6 +9,17 @@ export class PostService {
     }
 
     async createPost({ title, body, author }: Partial<IPostsRequest>) {
+        // checks if the user exists
+        const authorExists = await prisma.user.findFirst({
+            where: {
+                id: author
+            }
+        })
+
+        if (!authorExists) {
+            throw new Error("Author does not exist!")
+        }
+
         await prisma.post.create({
             data: {
                 title,
@@ -31,6 +34,17 @@ export class PostService {
     }
 
     async updatePost({ currentUser, id, title, body, published }: Partial<IPostsRequest>) {
+
+        //Check if post exists
+        const postExists = await prisma.post.findFirst({
+            where: {
+                id
+            }
+        })
+
+        if (!postExists) {
+            throw new Error("Posts does not exist!")
+        }
 
         // checks if the user owns the Post
         const postAuthor = await prisma.post.findFirst({
@@ -57,6 +71,16 @@ export class PostService {
     }
 
     async deletePost({ currentUser, id }: Partial<IPostsRequest>) {
+        //Check if post exists
+        const postExists = await prisma.post.findFirst({
+            where: {
+                id
+            }
+        })
+
+        if (!postExists) {
+            throw new Error("Posts does not exist!")
+        }
 
         // checks if the user owns the Post
         const postAuthor = await prisma.post.findFirst({

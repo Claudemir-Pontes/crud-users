@@ -1,14 +1,5 @@
+import { IProfilesRequest } from "../interfaces/IProfilesRequest"
 import { prisma } from "../models/prismaModel"
-
-interface IProfilesRequest {
-    id: string,
-    bio: string,
-    picture: string,
-    name: string,
-    email: string,
-    hashed_password: string,
-    userId: string
-}
 
 export class ProfileService {
 
@@ -19,15 +10,15 @@ export class ProfileService {
 
     async createProfile({ bio, picture, name, email, hashed_password }: Partial<IProfilesRequest>) {
         //Check if email exists
-        // const emailAlreadyExists = await prisma.user.findFirst({
-        //     where: {
-        //         email
-        //     }
-        // })
+        const emailAlreadyExists = await prisma.user.findFirst({
+            where: {
+                email
+            }
+        })
 
-        // if (emailAlreadyExists) {
-        //     throw new Error("Email already exists!")
-        // }
+        if (emailAlreadyExists) {
+            throw new Error("Email already exists!")
+        }
 
         const createProfile = await prisma.profile.create({
             data: {
@@ -45,6 +36,17 @@ export class ProfileService {
     }
 
     async updateProfile({ id, bio, picture, userId }: Partial<IProfilesRequest>) {
+        //Check if profile exists
+        const profileExists = await prisma.profile.findFirst({
+            where: {
+                id
+            }
+        })
+
+        if (!profileExists) {
+            throw new Error("Profile does not exist!")
+        }
+        
         await prisma.profile.update({
             where: {
                 id
@@ -62,11 +64,23 @@ export class ProfileService {
     }
 
     async deleteProfile({ id }: Partial<IProfilesRequest>) {
+        //Check if profile exists
+        const profileExists = await prisma.profile.findFirst({
+            where: {
+                id
+            }
+        })
+
+        if (!profileExists) {
+            throw new Error("Profile does not exist!")
+        }
+
         const userId = await prisma.profile.delete({
             where: {
                 id
             }
         })
+
         await prisma.user.delete({
             where: {
                 id: userId.userId

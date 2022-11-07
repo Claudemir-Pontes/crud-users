@@ -1,4 +1,5 @@
 import { Router } from "express"
+import { postSchema, postValidate } from "../middleware/postValidate"
 import { PostService } from "../services/postService"
 
 
@@ -15,7 +16,7 @@ router.get('/', async (request, response) => {
     }
 })
 
-router.post('/', async (request, response) => {
+router.post('/', postValidate(postSchema.create), async (request, response) => {
     try {
         const { title, body, author } = request.body
 
@@ -27,7 +28,7 @@ router.post('/', async (request, response) => {
     }
 })
 
-router.put('/', async (request, response) => {
+router.put('/', postValidate(postSchema.update), async (request, response) => {
     try {
         const { currentUser, id, title, body, published } = request.body
 
@@ -39,7 +40,7 @@ router.put('/', async (request, response) => {
     }
 })
 
-router.delete('/', async (request, response) => {
+router.delete('/', postValidate(postSchema.delete), async (request, response) => {
     try {
         const { currentUser, id } = request.body
 

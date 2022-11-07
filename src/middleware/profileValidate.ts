@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from "express"
 import Joi, { ObjectSchema } from 'joi'
-import { IUserRequest } from "../interfaces/IUserRequest"
+import { IProfilesRequest } from "../interfaces/IProfilesRequest"
 
-export const userValidate = (schema: ObjectSchema) => {
+export const profileValidate = (schema: ObjectSchema) => {
     return async (request: Request, response: Response, next: NextFunction) => {
         try {
             await schema.validateAsync(request.body)
@@ -13,8 +13,8 @@ export const userValidate = (schema: ObjectSchema) => {
     }
 }
 
-export const userSchema = {
-    create: Joi.object<IUserRequest>({
+export const profileSchema = {
+    create: Joi.object<IProfilesRequest>({
         name: Joi
             .string()
             .alphanum()
@@ -31,31 +31,40 @@ export const userSchema = {
             .string()
             .pattern(new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[@$!%*?&])[A-Za-z0-9@$!%*?&]{8,}$'))
             .required(),
+
+        bio: Joi
+            .string()
+            .max(500)
+            .required().allow(''),
+
+        picture: Joi
+            .string()
+            .max(150)
+            .uri()
+            .required().allow('')
     }),
-    
-    update: Joi.object<IUserRequest>({
+
+    update: Joi.object<IProfilesRequest>({
         id: Joi
             .string()
             .required(),
 
-        name: Joi
-            .string()
-            .alphanum()
-            .min(3)
-            .max(30),
+        userId: Joi
+            .string(),
 
-        email: Joi
+        bio: Joi
             .string()
-            .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }),
+            .max(500),
 
-        hashed_password: Joi
+        picture: Joi
             .string()
-            .pattern(new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[@$!%*?&])[A-Za-z0-9@$!%*?&]{8,}$'))
+            .max(150)
+            .uri()
     }),
 
-    delete: Joi.object<IUserRequest>({
+    delete: Joi.object<IProfilesRequest>({
         id: Joi
-        .string()
-        .required()
+            .string()
+            .required()
     })
 }

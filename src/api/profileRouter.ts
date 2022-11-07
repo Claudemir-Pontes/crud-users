@@ -1,4 +1,5 @@
 import { Router } from "express"
+import { profileValidate, profileSchema } from "../middleware/profileValidate"
 import { ProfileService } from "../services/profileService"
 
 const router = Router()
@@ -15,7 +16,7 @@ router.get('/', async (request, response) => {
     }
 })
 
-router.post('/', async (request, response) => {
+router.post('/', profileValidate(profileSchema.create), async (request, response) => {
     try {
         const { bio, picture, name, email, hashed_password } = request.body
 
@@ -27,7 +28,7 @@ router.post('/', async (request, response) => {
     }
 })
 
-router.put('/', async (request, response) => {
+router.put('/', profileValidate(profileSchema.update), async (request, response) => {
     try {
         const { id, bio, picture, userId } = request.body
 
@@ -39,7 +40,7 @@ router.put('/', async (request, response) => {
     }
 })
 
-router.delete('/', async (request, response) => {
+router.delete('/', profileValidate(profileSchema.delete), async (request, response) => {
     try {
         const { id } = request.body
 

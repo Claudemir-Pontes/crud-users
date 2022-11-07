@@ -70,7 +70,7 @@ export class UserService {
             throw new Error("User does not exist!")
         }
 
-        await prisma.user.delete({
+        await prisma.user.deleteMany({
             where: {
                 id
             }
