@@ -1,5 +1,6 @@
 import { prisma } from "../models/prismaModel"
 import { IUserRequest } from "../interfaces/IUserRequest"
+import { hash } from "bcryptjs"
 
 export class UserService {
 
@@ -22,28 +23,45 @@ export class UserService {
             throw new Error("User already exists!")
         }
 
+        const passwordHash = await hash(hashed_password, 8)
+
         //Register the User
         await prisma.user.create({
             data: {
                 name,
                 email,
-                hashed_password
+                hashed_password: passwordHash
             }
         })
     }
 
     async updateUser({ id, name, email, hashed_password }: IUserRequest) {
 
-        //Check if email exists
-        const userAlreadyExists = await prisma.user.findFirst({
+        //Check if user exists
+        const userExists = await prisma.user.findFirst({
+            where: {
+                id
+            }
+        })
+
+        if (!userExists) {
+            throw new Error("User does not exists!")
+        }
+
+        //Check if this email can be used.
+        const emailExists = await prisma.user.findFirst({
             where: {
                 email
             }
         })
 
-        if (userAlreadyExists) {
-            throw new Error("Email already exists!")
+        const sameEmail = email == userExists.email
+
+        if (!sameEmail && email != undefined && emailExists) {
+            throw new Error("This email cannot be used!")
         }
+
+        const passwordHash = await hash(hashed_password, 8)
 
         //Update the user
         await prisma.user.update({
@@ -53,7 +71,7 @@ export class UserService {
             data: {
                 name,
                 email,
-                hashed_password
+                hashed_password: passwordHash
             }
         })
     }

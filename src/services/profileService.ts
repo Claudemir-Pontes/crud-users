@@ -1,5 +1,6 @@
 import { IProfilesRequest } from "../interfaces/IProfilesRequest"
 import { prisma } from "../models/prismaModel"
+import { hash } from "bcryptjs"
 
 export class ProfileService {
 
@@ -20,7 +21,9 @@ export class ProfileService {
             throw new Error("Email already exists!")
         }
 
-        const createProfile = await prisma.profile.create({
+        const passwordHash = await hash(hashed_password, 8)  
+
+        await prisma.profile.create({
             data: {
                 bio,
                 picture,
@@ -28,7 +31,7 @@ export class ProfileService {
                     create: {
                         name,
                         email,
-                        hashed_password
+                        hashed_password: passwordHash
                     }
                 }
             }
